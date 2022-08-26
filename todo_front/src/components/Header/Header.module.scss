@@ -3,7 +3,7 @@
 
 .header {
   padding: 0.5rem 0;
-  background-color: $blackBackground;
+  background-color: $darkBlue;
 
   .header__wrapper {
     @include dflex(space-between);

@@ -1,19 +1,9 @@
 @import "../../assets/scss/variables";
 
-
 body,
 html,
 #root {
   word-wrap: break-word;
-}
-
-body {
-  font-size: 16px;
-  background-color: $black;
-
-  h2 {
-    font-weight: bold;
-  }
 }
 
 #root {
@@ -23,12 +13,10 @@ body {
 }
 
 ::-webkit-scrollbar {
-  background-color: $black;
+  background-color: $darkBlue;
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: $borderRadiusMin;
   background-color: $orange;
 }
-
-

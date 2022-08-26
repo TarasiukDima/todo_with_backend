@@ -1,6 +1,8 @@
 import React from "react";
 import { Typography } from "@mui/material";
 import PageContent from "../../components/PageContent";
+import ListTodos from "../../components/ListTodos";
+import FormTodo from "../../components/FormTodo";
 import css from "./TodoPage.module.scss";
 
 const TodoPage = () => {
@@ -17,7 +19,9 @@ const TodoPage = () => {
         Todo page
       </Typography>
 
+      <FormTodo />
 
+      <ListTodos />
     </PageContent>
   );
 };

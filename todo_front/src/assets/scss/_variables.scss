@@ -3,21 +3,35 @@ $withOutColor: transparent;
 $white: #fff;
 $blue: #1976d2;
 $red: red;
-$black: #001a33;
-$blackBackground: #001a33;
+$darkBlue: #001a33;
+$black: #362E2D;
 $orange: #ef9401;
+$linkBlue: #00c2ff;
 
 $boxShadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 /* common colors end */
 
 /* common values start */
 $transitionTime: 0.3s;
-$borderRadiusMin: 10px;
+$borderRadiusMin: 5px;
 /* common values end */
 
 /* common parts start */
 %submitButton {
-  background-color: red;
+  display: block;
+  color: $white;
+  background-color: $blue;
+  cursor: pointer;
+  transition: $transitionTime;
+
+  &:hover {
+    color: $darkBlue;
+    background-color: $orange;
+  }
+
+  &:active {
+    box-shadow: inset 0px 0 10px rgba(0, 0, 0, 0.8);
+  }
 }
 
 %pageLink {
@@ -29,8 +43,14 @@ $borderRadiusMin: 10px;
   background-color: $blue;
 
   &:hover {
-    color: $black;
+    color: $darkBlue;
     background-color: $orange;
   }
+}
+
+%formErrorText {
+  font-size: 1rem;
+  text-shadow: 0 0 1px $black, 0 0 2px $black, 0 0 3px $black, 0 0 4px $black;
+  color: $orange;
 }
 /* common parts end */

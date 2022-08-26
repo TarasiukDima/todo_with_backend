@@ -35,12 +35,6 @@
   }
 }
 
-@mixin beforeTablet() {
-  @media screen and (min-width: 992px) {
-    @content;
-  }
-}
-
 @mixin tablet() {
   @media screen and (max-width: 991px) {
     @content;

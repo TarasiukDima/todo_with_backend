@@ -9,10 +9,10 @@ export const RoutesSettings = {
 
 /* todo settings start */
 export const fieldRegExp = new RegExp("\\/|\\<|\\>", "g");
-export const MIN_LENGTH_TITLE = 3;
-export const MAX_LENGTH_TITLE = 100;
-export const MIN_LENGTH_TEXT = 10;
-export const MAX_LENGTH_TEXT = 400;
+export const MIN_LENGTH_TODO_TITLE = 3;
+export const MAX_LENGTH_TODO_TITLE = 100;
+export const MIN_LENGTH_TODO_TEXT = 10;
+export const MAX_LENGTH_TODO_TEXT = 400;
 /* todo settings end */
 
 /* user settings start */

@@ -36,6 +36,19 @@ const ThemeToDoProvider: FC<IChildren> = ({ children }) => {
     },
   });
 
+  darkTheme.typography.h1 = {
+    fontSize: '2.2rem',
+    [darkTheme.breakpoints.up('sm')]: {
+      fontSize: '3rem',
+    },
+    [darkTheme.breakpoints.up('md')]: {
+      fontSize: '4rem',
+    },
+    [darkTheme.breakpoints.up('lg')]: {
+      fontSize: '5rem',
+    },
+  };
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline enableColorScheme={true} />

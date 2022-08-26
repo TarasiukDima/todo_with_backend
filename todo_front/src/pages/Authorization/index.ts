@@ -1,1 +1,1 @@
-export {default} from './AuthorizationContent';
+export { default } from './Authorization';

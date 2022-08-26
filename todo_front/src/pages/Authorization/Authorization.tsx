@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import React, { FC, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import classNames from "classnames";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
@@ -30,10 +30,18 @@ import { IUserRegistration } from "../../types";
 import css from "./Authorization.module.scss";
 import PageContent from "../../components/PageContent";
 
-const AuthorizationContent: FC = () => {
+export enum VariantAuthPage {
+  Registration = "Registration",
+  LogIn = "LogIn",
+}
+
+interface IAuthorizationProps {
+  variantPage: VariantAuthPage;
+}
+
+const Authorization: FC<IAuthorizationProps> = ({ variantPage }) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [isRegistrationPage, setIsRegistrationPage] = useState<boolean>(false);
+  const isRegistrationPage = variantPage === VariantAuthPage.Registration;
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const {
     register,
@@ -41,12 +49,6 @@ const AuthorizationContent: FC = () => {
     handleSubmit,
     reset,
   } = useForm<IUserRegistration>();
-
-  useEffect(() => {
-    if (pathname === RoutesSettings.signup) {
-      setIsRegistrationPage(true);
-    }
-  }, [pathname]);
 
   const onSubmit: SubmitHandler<IUserRegistration> = (data) => {
     console.log(data);
@@ -57,16 +59,12 @@ const AuthorizationContent: FC = () => {
     return isRegistrationPage ? RoutesSettings.signin : RoutesSettings.signup;
   };
 
-  const changeFormPage = (): void => {
-    setIsRegistrationPage((prev) => !prev);
-  };
-
   const classNameSubmit = classNames(css.form__submit, {
     [css.disabled]: isSubmitting,
   });
 
   return (
-    <PageContent>
+    <PageContent sectionClass={css.authorization}>
       <Typography
         className={css.authPage__title}
         variant="h1"
@@ -159,6 +157,7 @@ const AuthorizationContent: FC = () => {
           <InputLabel htmlFor="password">
             {UserFormMessages.placeHolderPassword}
           </InputLabel>
+
           <OutlinedInput
             id="password"
             type={isShowPassword ? "text" : "password"}
@@ -204,10 +203,10 @@ const AuthorizationContent: FC = () => {
               ? RegistrationMessages.changePage
               : AuthorizationMessages.changePage}
           </Box>
+
           <Link
             className={css.form__text_linkToChangeSortOfAuth}
             to={anotherFormPageLink()}
-            onClick={changeFormPage}
           >
             {isRegistrationPage
               ? RegistrationMessages.anotherFormPageName
@@ -227,4 +226,4 @@ const AuthorizationContent: FC = () => {
   );
 };
 
-export default AuthorizationContent;
+export default Authorization;

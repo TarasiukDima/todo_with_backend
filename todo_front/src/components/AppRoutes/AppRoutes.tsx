@@ -5,6 +5,7 @@ import TodoPage from "../../pages/TodoPage";
 import NoDoubleLogin from "../NoDoubleLogin";
 import AppSuspensePage from "./AppSuspensePage";
 import { RoutesSettings } from "../../settings";
+import { VariantAuthPage } from "../../pages/Authorization/Authorization";
 
 const Authorization = React.lazy(() => import("../../pages/Authorization"));
 const NotFound = React.lazy(() => import("../../pages/NotFound"));
@@ -20,7 +21,10 @@ const AppRoutes: FC = () => {
         element={
           <NoDoubleLogin>
             <AppSuspensePage>
-              <Authorization />
+              <Authorization
+                key={VariantAuthPage.LogIn}
+                variantPage={VariantAuthPage.LogIn}
+              />
             </AppSuspensePage>
           </NoDoubleLogin>
         }
@@ -30,7 +34,10 @@ const AppRoutes: FC = () => {
         element={
           <NoDoubleLogin>
             <AppSuspensePage>
-              <Authorization />
+              <Authorization
+                key={VariantAuthPage.Registration}
+                variantPage={VariantAuthPage.Registration}
+              />
             </AppSuspensePage>
           </NoDoubleLogin>
         }
