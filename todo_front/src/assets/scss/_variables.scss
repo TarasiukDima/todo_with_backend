@@ -1,0 +1,36 @@
+/* common colors start */
+$withOutColor: transparent;
+$white: #fff;
+$blue: #1976d2;
+$red: red;
+$black: #001a33;
+$blackBackground: #001a33;
+$orange: #ef9401;
+
+$boxShadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+/* common colors end */
+
+/* common values start */
+$transitionTime: 0.3s;
+$borderRadiusMin: 10px;
+/* common values end */
+
+/* common parts start */
+%submitButton {
+  background-color: red;
+}
+
+%pageLink {
+  display: block;
+  width: fit-content;
+  margin: 3rem auto 0;
+  padding: 0.5rem;
+  color: $white;
+  background-color: $blue;
+
+  &:hover {
+    color: $black;
+    background-color: $orange;
+  }
+}
+/* common parts end */
