@@ -42,6 +42,10 @@ export class UserController {
   @Public()
   @Post('signup')
   @ApiCreatedResponse({ description: DOC_MESSAGES.userCreated, type: User })
+  @ApiBadRequestResponse({
+    description: DOC_MESSAGES.userExist,
+    schema: badResponse,
+  })
   @HttpCode(StatusCodes.CREATED)
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
