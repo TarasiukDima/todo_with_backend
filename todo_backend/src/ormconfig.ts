@@ -15,8 +15,7 @@ const commonOptions = {
   username: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
   database: POSTGRES_DB,
-  migrationsRun: false,
-  synchronize: true,
+  synchronize: false,
   logging: true,
 };
 
@@ -25,12 +24,14 @@ export const typeormConfig = {
   entities: [__dirname + '/**/entities/*.entity.{ts,js}'],
   migrations: [__dirname + './migration/*.{ts,js}'],
   retryAttempts: 10,
+  migrationsRun: true,
 } as TypeOrmModuleOptions;
 
 export const dataSourceConfig = {
   ...commonOptions,
   entities: ['dist/**/entities/*.entity.js'],
   migrations: ['src/migration/*.{ts,js}'],
+  migrationsRun: false,
 } as DataSourceOptions;
 
 export const AppDataSource = new DataSource(dataSourceConfig);
