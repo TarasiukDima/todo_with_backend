@@ -90,7 +90,7 @@ export class UserService {
     const userExist = await this.userRepository.findOneBy({ login });
 
     if (userExist) {
-      throw new NotFoundException(AUTH_MESSAGES.userExist);
+      throw new BadRequestException(AUTH_MESSAGES.userExist);
     }
 
     const user = this.userRepository.create({
