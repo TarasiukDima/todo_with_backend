@@ -1,10 +1,13 @@
-import React from "react";
+import React, { FC } from "react";
+import { useTodoSelector } from "../../store/store";
 import { Button, Typography } from "@mui/material";
 import PageContent from "../../components/PageContent";
-import css from "./Home.module.scss";
 import { RoutesSettings } from "../../settings";
+import css from "./Home.module.scss";
 
-const Home = () => {
+const Home: FC = () => {
+  const { token } = useTodoSelector((state) => state.app);
+
   return (
     <PageContent sectionClass={css.home}>
       <Typography
@@ -27,9 +30,11 @@ const Home = () => {
         Simple ToDo app with backend
       </Typography>
 
-      <Button href={RoutesSettings.signup} className={css.home__link}>
-        Registration page
-      </Button>
+      {!token && (
+        <Button href={RoutesSettings.signup} className={css.home__link}>
+          Registration page
+        </Button>
+      )}
     </PageContent>
   );
 };

@@ -1,7 +1,10 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import classNames from "classnames";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSnackbar } from 'notistack';
+import { useTodoDispatch } from "../../store/store";
+import { useSignInMutation, useSignUpMutation } from "../../store/userApi";
 import {
   Box,
   FormControl,
@@ -14,11 +17,17 @@ import {
   Typography,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import PageContent from "../../components/PageContent";
+import Spinner from "../../components/Spinner";
+import CloseButton from "../../components/CloseButton";
+import { setRefreshToken, setToken } from "../../store/appSlice";
+import { setLocalStorageTokens } from "../../utils";
 import {
   AuthorizationMessages,
   MAX_LENGTH_LOGIN,
   MAX_LENGTH_PASSWORD,
   MAX_LENGTH_USERNAME,
+  messageErrorOptions,
   MIN_LENGTH_LOGIN,
   MIN_LENGTH_PASSWORD,
   MIN_LENGTH_USERNAME,
@@ -26,9 +35,8 @@ import {
   RoutesSettings,
   UserFormMessages,
 } from "../../settings";
-import { IUserRegistration } from "../../types";
+import { IErrorAnswer, IUserLogIn, IUserRegistration } from "../../types";
 import css from "./Authorization.module.scss";
-import PageContent from "../../components/PageContent";
 
 export enum VariantAuthPage {
   Registration = "Registration",
@@ -40,7 +48,12 @@ interface IAuthorizationProps {
 }
 
 const Authorization: FC<IAuthorizationProps> = ({ variantPage }) => {
-  const navigate = useNavigate();
+  const dispatch = useTodoDispatch();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const [signUp, { isLoading: isLoadingSignUp, error: errorSignUp }] =
+    useSignUpMutation();
+  const [signIn, { isLoading: isLoadingSignIn, error: errorSignIn }] =
+    useSignInMutation();
   const isRegistrationPage = variantPage === VariantAuthPage.Registration;
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const {
@@ -50,9 +63,47 @@ const Authorization: FC<IAuthorizationProps> = ({ variantPage }) => {
     reset,
   } = useForm<IUserRegistration>();
 
-  const onSubmit: SubmitHandler<IUserRegistration> = (data) => {
-    console.log(data);
+  useEffect(() => {
+    if (errorSignUp && "data" in errorSignUp) {
+      const { message } = errorSignUp.data as IErrorAnswer;
+      enqueueSnackbar(message, {
+        ...messageErrorOptions,
+        action: (key) => <CloseButton closeCb={() => closeSnackbar(key)} />,
+      });
+    }
+  }, [errorSignUp, enqueueSnackbar, closeSnackbar]);
+
+  useEffect(() => {
+    if (errorSignIn && "data" in errorSignIn) {
+      const { message } = errorSignIn.data as IErrorAnswer;
+
+      enqueueSnackbar(message, {
+        ...messageErrorOptions,
+        action: (key) => <CloseButton closeCb={() => closeSnackbar(key)} />,
+      });
+    }
+  }, [errorSignIn, enqueueSnackbar, closeSnackbar]);
+
+  const onSubmit: SubmitHandler<IUserRegistration> = async (data) => {
+    if (isRegistrationPage) {
+      await signUp(data);
+      await userLogIn({
+        login: data.login,
+        password: data.password,
+      });
+    } else {
+      await userLogIn(data);
+    }
     reset();
+  };
+
+  const userLogIn = async (user: IUserLogIn) => {
+    try {
+      const { accessToken, refreshToken } = await signIn(user).unwrap();
+      dispatch(setToken(accessToken));
+      dispatch(setRefreshToken(refreshToken));
+      setLocalStorageTokens(accessToken, refreshToken);
+    } catch (error) {}
   };
 
   const anotherFormPageLink = (): string => {
@@ -60,7 +111,7 @@ const Authorization: FC<IAuthorizationProps> = ({ variantPage }) => {
   };
 
   const classNameSubmit = classNames(css.form__submit, {
-    [css.disabled]: isSubmitting,
+    [css.disabled]: isSubmitting || isLoadingSignUp || isLoadingSignIn,
   });
 
   return (
@@ -87,9 +138,9 @@ const Authorization: FC<IAuthorizationProps> = ({ variantPage }) => {
           <>
             <TextField
               className={classNames(css.form__element, {
-                [css.error]: !!errors?.name?.message,
+                [css.error]: !!errors?.username?.message,
               })}
-              {...register("name", {
+              {...register("username", {
                 required: RegistrationMessages.nameUserError,
                 minLength: {
                   value: MIN_LENGTH_USERNAME,
@@ -106,13 +157,13 @@ const Authorization: FC<IAuthorizationProps> = ({ variantPage }) => {
               autoFocus={isRegistrationPage}
             />
 
-            {errors?.name?.message && (
+            {errors?.username?.message && (
               <Typography
                 variant="inherit"
                 component="p"
                 className={css.form__error}
               >
-                {errors?.name?.message}
+                {errors?.username?.message}
               </Typography>
             )}
           </>
@@ -214,11 +265,15 @@ const Authorization: FC<IAuthorizationProps> = ({ variantPage }) => {
           </Link>
         </Typography>
 
+        {(isLoadingSignUp || isLoadingSignIn) && (
+          <Spinner className={css.authPage__loader} size={50} />
+        )}
+
         <InputBase
           className={classNameSubmit}
           type="submit"
           disableInjectingGlobalStyles={true}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isLoadingSignUp || isLoadingSignIn}
           value="Submit"
         />
       </Box>

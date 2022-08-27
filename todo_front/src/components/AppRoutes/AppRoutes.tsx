@@ -6,6 +6,7 @@ import NoDoubleLogin from "../NoDoubleLogin";
 import AppSuspensePage from "./AppSuspensePage";
 import { RoutesSettings } from "../../settings";
 import { VariantAuthPage } from "../../pages/Authorization/Authorization";
+import RequiredAuth from "../RequiredAuth";
 
 const Authorization = React.lazy(() => import("../../pages/Authorization"));
 const NotFound = React.lazy(() => import("../../pages/NotFound"));
@@ -15,31 +16,38 @@ const AppRoutes: FC = () => {
   return (
     <Routes>
       <Route path={RoutesSettings.home} element={<Home />} />
-      <Route path={RoutesSettings.todo} element={<TodoPage />} />
+      <Route
+        path={RoutesSettings.todo}
+        element={
+          <RequiredAuth>
+            <TodoPage />
+          </RequiredAuth>
+        }
+      />
       <Route
         path={RoutesSettings.signin}
         element={
-          <NoDoubleLogin>
+          // <NoDoubleLogin redirect={RoutesSettings.home}>
             <AppSuspensePage>
               <Authorization
                 key={VariantAuthPage.LogIn}
                 variantPage={VariantAuthPage.LogIn}
               />
             </AppSuspensePage>
-          </NoDoubleLogin>
+          // </NoDoubleLogin>
         }
       />
       <Route
         path={RoutesSettings.signup}
         element={
-          <NoDoubleLogin>
+          // <NoDoubleLogin redirect={RoutesSettings.home}>
             <AppSuspensePage>
               <Authorization
                 key={VariantAuthPage.Registration}
                 variantPage={VariantAuthPage.Registration}
               />
             </AppSuspensePage>
-          </NoDoubleLogin>
+          // </NoDoubleLogin>
         }
       />
       <Route

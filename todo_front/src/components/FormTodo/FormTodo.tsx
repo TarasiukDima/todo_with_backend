@@ -1,22 +1,30 @@
-import React from "react";
+import React, { FC, useEffect } from "react";
 import classNames from "classnames";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSnackbar } from "notistack";
+import { useAddTodoMutation } from "../../store/todoApi";
 import { Box, InputBase, TextField, Typography } from "@mui/material";
-import css from "./FormTodo.module.scss";
 import {
   FormTodoMessages,
   MAX_LENGTH_TODO_TEXT,
   MAX_LENGTH_TODO_TITLE,
+  messageErrorOptions,
   MIN_LENGTH_TODO_TEXT,
   MIN_LENGTH_TODO_TITLE,
 } from "../../settings";
+import CloseButton from "../CloseButton";
+import { IErrorAnswer } from "../../types";
+import css from "./FormTodo.module.scss";
 
 interface ITodoForm {
   title: string;
-  description: string;
+  text: string;
 }
 
-const FormTodo = () => {
+const FormTodo: FC = () => {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const [addTodo, { isLoading: isLoadingAddTodo, error: errorAddTodo }] =
+    useAddTodoMutation();
   const {
     register,
     formState: { errors, isSubmitting },
@@ -24,13 +32,26 @@ const FormTodo = () => {
     reset,
   } = useForm<ITodoForm>();
 
+  useEffect(() => {
+    if (errorAddTodo && "data" in errorAddTodo) {
+      const { message } = errorAddTodo.data as IErrorAnswer;
+
+      enqueueSnackbar(message, {
+        ...messageErrorOptions,
+        action: (key) => <CloseButton closeCb={() => closeSnackbar(key)} />,
+      });
+    }
+  }, [errorAddTodo, enqueueSnackbar, closeSnackbar]);
+
   const onSubmit: SubmitHandler<ITodoForm> = (data) => {
     console.log(data);
+    addTodo(data);
+
     reset();
   };
 
   const classNameSubmit = classNames(css.form__submit, {
-    [css.disabled]: isSubmitting,
+    [css.disabled]: isSubmitting || isLoadingAddTodo,
   });
 
   return (
@@ -82,9 +103,9 @@ const FormTodo = () => {
 
       <TextField
         className={classNames([css.form__element, css.form__todo_text], {
-          [css.error]: !!errors?.description?.message,
+          [css.error]: !!errors?.text?.message,
         })}
-        {...register("description", {
+        {...register("text", {
           required: FormTodoMessages.textError,
           minLength: {
             value: MIN_LENGTH_TODO_TEXT,
@@ -100,13 +121,13 @@ const FormTodo = () => {
         fullWidth
       />
 
-      {errors?.description?.message && (
+      {errors?.text?.message && (
         <Typography
           variant="inherit"
           component="p"
           className={classNames([css.form__error, css.form__error_text])}
         >
-          {errors?.description?.message}
+          {errors?.text?.message}
         </Typography>
       )}
 
@@ -114,8 +135,8 @@ const FormTodo = () => {
         className={classNameSubmit}
         type="submit"
         disableInjectingGlobalStyles={true}
-        disabled={isSubmitting}
-        value="Add todo"
+        disabled={isSubmitting || isLoadingAddTodo}
+        value={isLoadingAddTodo ? "Loading..." : "Add todo"}
       />
     </Box>
   );

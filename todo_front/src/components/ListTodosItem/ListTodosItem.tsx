@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
+import classNames from "classnames";
+import {
+  useDeleteTodoMutation,
+  useUpdateTodoMutation,
+} from "../../store/todoApi";
 import {
   Box,
   Button,
@@ -8,22 +14,64 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { ITodo } from "../../types";
+import CloseButton from "../CloseButton";
+import { messageErrorOptions } from "../../settings";
+import { IErrorAnswer, ITodo } from "../../types";
 import css from "./ListTodosItem.module.scss";
+import Spinner from "../Spinner";
 
-interface IListTodosItemProps extends Omit<ITodo, "id"> {
+interface IListTodosItemProps extends ITodo {
   number: number;
 }
 
-const ListTodosItem = ({ number, title, text, done }: IListTodosItemProps) => {
+const ListTodosItem = ({
+  id,
+  number,
+  title,
+  text,
+  done,
+}: IListTodosItemProps) => {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [openModal, setOpenModal] = useState<boolean>(false);
 
+  const [
+    deleteTodo,
+    { isLoading: isLoadingDeleteTodo, error: errorDeleteTodo },
+  ] = useDeleteTodoMutation();
+  const [
+    updateTodo,
+    { isLoading: isLoadingUpdateTodo, error: errorUpdateTodo },
+  ] = useUpdateTodoMutation();
+
+  useEffect(() => {
+    if (errorDeleteTodo && "data" in errorDeleteTodo) {
+      const { message } = errorDeleteTodo.data as IErrorAnswer;
+
+      enqueueSnackbar(message, {
+        ...messageErrorOptions,
+        action: (key) => <CloseButton closeCb={() => closeSnackbar(key)} />,
+      });
+    }
+  }, [errorDeleteTodo, enqueueSnackbar, closeSnackbar]);
+
+  useEffect(() => {
+    if (errorUpdateTodo && "data" in errorUpdateTodo) {
+      const { message } = errorUpdateTodo.data as IErrorAnswer;
+
+      enqueueSnackbar(message, {
+        ...messageErrorOptions,
+        action: (key) => <CloseButton closeCb={() => closeSnackbar(key)} />,
+      });
+    }
+  }, [errorUpdateTodo, enqueueSnackbar, closeSnackbar]);
+
   const handleDone = () => {
-    console.log("Done");
+    updateTodo({ body: { done: !done }, id });
   };
 
   const handleRemove = () => {
-    console.log("Remove");
+    deleteTodo(id);
   };
 
   const handleOpen = () => {
@@ -33,9 +81,14 @@ const ListTodosItem = ({ number, title, text, done }: IListTodosItemProps) => {
   const handleClose = () => {
     setOpenModal(false);
   };
+
+  const classNameItem = classNames(css.list__item, {
+    [css.loading]: isLoadingDeleteTodo || isLoadingUpdateTodo,
+    [css.done]: done,
+  });
   return (
     <>
-      <li className={css.list__item}>
+      <li className={classNameItem}>
         <Typography
           component="p"
           className={css.list__item_number}
@@ -63,11 +116,16 @@ const ListTodosItem = ({ number, title, text, done }: IListTodosItemProps) => {
         </Box>
 
         <Box className={css.list__item_buttons} component="div">
-          <Button className={css.list__item_done} onClick={handleDone}>
+          <Button
+            className={css.list__item_done}
+            disabled={isLoadingDeleteTodo || isLoadingUpdateTodo}
+            onClick={handleDone}
+          >
             {done ? "Undone" : "Done"}
           </Button>
 
           <Button
+            disabled={isLoadingDeleteTodo || isLoadingUpdateTodo}
             className={css.list__item_delete}
             variant="contained"
             color="error"
@@ -77,6 +135,8 @@ const ListTodosItem = ({ number, title, text, done }: IListTodosItemProps) => {
             <DeleteForeverIcon />
           </Button>
         </Box>
+
+        <Box className={css.list__item_spinner} component="div"><Spinner size={50}/></Box>
       </li>
 
       <Dialog

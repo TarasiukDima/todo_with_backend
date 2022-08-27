@@ -2,11 +2,36 @@ import { ReactNode } from "react";
 
 export type TSimpleFunction = () => void;
 
-export interface ITodo {
-  id: string;
+export interface ITokenAnswer {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface IErrorAnswer {
+  error: string;
+  message: string;
+  statusCode: number;
+}
+
+export interface ICreateTodo {
   title: string;
   text: string;
+}
+
+export interface IUpdateTodo {
+  title?: string;
+  text?: string;
+  done?: boolean;
+}
+
+export interface ITodo extends ICreateTodo {
+  id: string;
   done: boolean;
+}
+
+export interface ITodoData {
+  items: Array<ITodo>;
+  count: number;
 }
 
 export interface IChildren {
@@ -19,5 +44,5 @@ export interface IUserLogIn {
 }
 
 export interface IUserRegistration extends IUserLogIn {
-  name?: string;
+  username?: string;
 }

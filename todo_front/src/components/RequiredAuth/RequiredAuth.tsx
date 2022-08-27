@@ -3,22 +3,22 @@ import { Navigate } from "react-router-dom";
 import { RoutesSettings } from "../../settings";
 import { useTodoSelector } from "../../store/store";
 
-interface INoDoubleLoginProps {
+interface IRequiredAuthProps {
   children: JSX.Element | null;
   redirect?: string;
 }
 
-const NoDoubleLogin: FC<INoDoubleLoginProps> = ({
+const RequiredAuth: FC<IRequiredAuthProps> = ({
   children,
   redirect = RoutesSettings.home,
-}: INoDoubleLoginProps) => {
+}: IRequiredAuthProps) => {
   const { token } = useTodoSelector((state) => state.app);
 
-  if (token) {
+  if (!token) {
     return <Navigate to={redirect} replace />;
   }
 
   return children;
 };
 
-export default NoDoubleLogin;
+export default RequiredAuth;
