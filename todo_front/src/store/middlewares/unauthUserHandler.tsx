@@ -12,10 +12,9 @@ import { clearLocalStorageTokens } from "../../utils";
 export const unauthUserHandler: Middleware =
   (api: MiddlewareAPI) => (next) => (action) => {
     if (isRejectedWithValue(action)) {
-
       const { statusCode } = action.payload.data;
-      if (statusCode === 401) {
 
+      if (statusCode === 401) {
         clearLocalStorageTokens();
         api.dispatch(setToken(null));
         api.dispatch(setRefreshToken(null));

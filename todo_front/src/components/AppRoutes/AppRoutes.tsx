@@ -27,27 +27,27 @@ const AppRoutes: FC = () => {
       <Route
         path={RoutesSettings.signin}
         element={
-          // <NoDoubleLogin redirect={RoutesSettings.home}>
+          <NoDoubleLogin redirect={RoutesSettings.home}>
             <AppSuspensePage>
               <Authorization
                 key={VariantAuthPage.LogIn}
                 variantPage={VariantAuthPage.LogIn}
               />
             </AppSuspensePage>
-          // </NoDoubleLogin>
+          </NoDoubleLogin>
         }
       />
       <Route
         path={RoutesSettings.signup}
         element={
-          // <NoDoubleLogin redirect={RoutesSettings.home}>
+          <NoDoubleLogin redirect={RoutesSettings.home}>
             <AppSuspensePage>
               <Authorization
                 key={VariantAuthPage.Registration}
                 variantPage={VariantAuthPage.Registration}
               />
             </AppSuspensePage>
-          // </NoDoubleLogin>
+          </NoDoubleLogin>
         }
       />
       <Route

@@ -3,6 +3,11 @@ import { BACKEND_URL, COUNT_TODOS_PAGE } from "../settings";
 import { RootState } from "./store";
 import { ICreateTodo, ITodo, ITodoData, IUpdateTodo } from "../types";
 
+interface ITodoQuery {
+  offset?: number;
+  limit?: number;
+}
+
 export const todoApi = createApi({
   reducerPath: "todo",
   baseQuery: fetchBaseQuery({
@@ -16,16 +21,15 @@ export const todoApi = createApi({
 
       return headers;
     },
-
   }),
   tagTypes: ["Todo"],
   endpoints: (build) => ({
-    // boards page
-    getAllTodos: build.query<ITodoData, void>({
-      // query: (offset = '0', limit = COUNT_TODOS_PAGE) => ({
-      query: () => ({
-        url: ''
+    getAllTodos: build.query<ITodoData, ITodoQuery>({
+      query: ({ offset = 1, limit = COUNT_TODOS_PAGE }) => ({
+        url: "",
+        params: { offset: (offset - 1) * limit, limit },
       }),
+
       providesTags: (result) =>
         result
           ? [
@@ -34,14 +38,16 @@ export const todoApi = createApi({
             ]
           : [{ type: "Todo", id: "LIST" }],
     }),
+
     addTodo: build.mutation<ITodo, ICreateTodo>({
       query: (body: ICreateTodo) => ({
-        url: '',
+        url: "",
         method: "POST",
         body,
       }),
       invalidatesTags: [{ type: "Todo", id: "LIST" }],
     }),
+
     updateTodo: build.mutation<ITodo, { body: IUpdateTodo; id: string }>({
       query: ({ body, id }) => ({
         url: id,
@@ -50,6 +56,7 @@ export const todoApi = createApi({
       }),
       invalidatesTags: [{ type: "Todo", id: "LIST" }],
     }),
+
     deleteTodo: build.mutation<null, string>({
       query: (id: string) => ({
         url: id,

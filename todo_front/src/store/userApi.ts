@@ -41,13 +41,16 @@ export const userApi = createApi({
       }),
     }),
 
-    refresh: build.query<ITokenAnswer, void>({
-      query: () => ({
+    refresh: build.query<ITokenAnswer, string>({
+      query: (refreshToken) => ({
         url: QueryPoints.refresh,
-
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
       }),
     }),
   }),
 });
 
-export const { useSignUpMutation, useSignInMutation, useRefreshQuery } = userApi;
+export const { useSignUpMutation, useSignInMutation, useRefreshQuery } =
+  userApi;

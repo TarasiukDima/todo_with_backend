@@ -9,12 +9,14 @@ export type IStateTodo = {
   token: string | null;
   refreshToken: string | null;
   page: number;
+  countItems: number;
 };
 
 export const initialState: IStateTodo = {
   token: localStorage.getItem(TOKEN_AUTH_LOCALSTORAGE) || null,
   refreshToken: localStorage.getItem(REFRESH_TOKEN_AUTH_LOCALSTORAGE) || null,
-  page: Number(localStorage.getItem(CURRENT_PAGE_LOCALSTORAGE)) || 1,
+  page: Math.abs(Number(localStorage.getItem(CURRENT_PAGE_LOCALSTORAGE))) || 1,
+  countItems: 0,
 };
 
 const app = createSlice({
