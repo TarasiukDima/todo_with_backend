@@ -44,7 +44,6 @@ const FormTodo: FC = () => {
   }, [errorAddTodo, enqueueSnackbar, closeSnackbar]);
 
   const onSubmit: SubmitHandler<ITodoForm> = (data) => {
-    console.log(data);
     addTodo(data);
 
     reset();

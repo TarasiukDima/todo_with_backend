@@ -1,26 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BACKEND_URL } from "../settings";
-import { RootState } from "../store/store";
 import { ITokenAnswer, IUserLogIn, IUserRegistration } from "../types";
 
 enum QueryPoints {
   signup = "signup",
   signin = "signin",
-  refresh = "refresh",
 }
 
 export const userApi = createApi({
   reducerPath: "user",
   baseQuery: fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/user/`,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).app.token;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
   }),
 
   tagTypes: ["User"],
@@ -40,17 +30,7 @@ export const userApi = createApi({
         body,
       }),
     }),
-
-    refresh: build.query<ITokenAnswer, string>({
-      query: (refreshToken) => ({
-        url: QueryPoints.refresh,
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      }),
-    }),
   }),
 });
 
-export const { useSignUpMutation, useSignInMutation, useRefreshQuery } =
-  userApi;
+export const { useSignUpMutation, useSignInMutation } = userApi;
