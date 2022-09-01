@@ -8,7 +8,11 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState, TodoDispatch } from "./store";
 import { setRefreshToken, setToken } from "./appSlice";
-import { refreshTokenFn, setLocalStorageTokens } from "../utils";
+import {
+  isExpDateToken,
+  refreshTokenFn,
+  setLocalStorageTokens,
+} from "../utils";
 import { BACKEND_URL, COUNT_TODOS_PAGE } from "../settings";
 import {
   ICreateTodo,
@@ -66,7 +70,13 @@ export const todoBaseQueryWithReauth: TBaseQuery = async (
 
     try {
       const newPair: ITokenAnswer = await refreshTokenFn(refreshToken);
-      if (!newPair || !newPair.accessToken || !newPair.refreshToken) {
+      if (
+        !refreshToken ||
+        !newPair ||
+        !newPair.accessToken ||
+        !newPair.refreshToken ||
+        isExpDateToken(refreshToken)
+      ) {
         return result;
       }
 
