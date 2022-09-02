@@ -16,7 +16,7 @@
     "626.64b043d5.chunk.js.map": "/todo_with_backend/static/js/626.64b043d5.chunk.js.map"
   },
   "entrypoints": [
-    "/todo_with_backend/static/css/main.7ef4edc8.css",
-    "/todo_with_backend/static/js/main.d9e2deca.js"
+    "/static/css/main.7ef4edc8.css",
+    "/static/js/main.d9e2deca.js"
   ]
 }
