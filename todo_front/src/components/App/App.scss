@@ -1,0 +1,22 @@
+@import "../../assets/scss/variables";
+
+body,
+html,
+#root {
+  word-wrap: break-word;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+::-webkit-scrollbar {
+  background-color: $darkBlue;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: $borderRadiusMin;
+  background-color: $orange;
+}
