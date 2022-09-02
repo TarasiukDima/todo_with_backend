@@ -1,0 +1,12 @@
+@import "../../assets/scss/variables";
+
+.home {
+  .home__description {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .home__link {
+    @extend %pageLink;
+  }
+}
