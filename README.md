@@ -5,7 +5,9 @@
 >**Doc backend**: [link to the doc](https://fathomless-beyond-41199.herokuapp.com/doc#/).
 
 >**Develop branch**: [develop](https://github.com/TarasiukDima/todo_with_backend/tree/develop).
+
 >**Frontent branch**: [front](https://github.com/TarasiukDima/todo_with_backend/tree/front).
+
 >**Backend branch**: [backend](https://github.com/TarasiukDima/todo_with_backend/tree/backend).
 
 ### 🚀 Technologies frontend:
